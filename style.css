@@ -1,28 +1,46 @@
-/* Estilos generales de la tarjeta */
 .pokemon-card {
+  width: calc(25% - 20px);
+  margin: 10px;
+  padding: 10px;
   background-color: #f3f3f3;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 10px;
-  margin: 10px;
-  width: 200px;
-  text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-/* Estilos para el nombre del Pokémon */
 .pokemon-card h2 {
   font-size: 20px;
   margin: 5px 0;
 }
 
-/* Estilos para el tipo de Pokémon */
 .pokemon-card p {
   font-size: 14px;
   margin: 5px 0;
 }
 
-/* Estilos para las habilidades */
 .pokemon-card .abilities {
   font-size: 12px;
+}
+
+.pokedex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Espaciado entre las tarjetas */
+}
+
+.pokemon-card:hover {
+  transform: scale(1.05); /* Escala ligeramente la tarjeta en el hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Cambia la sombra en el hover */
+  cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
+}
+
+@media screen and (max-width: 768px) {
+  .pokedex-container {
+    justify-content: center; /* Centrar las tarjetas en una columna */
+  }
+
+  .pokemon-card {
+    width: 100%;
+  }
 }

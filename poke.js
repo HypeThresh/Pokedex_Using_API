@@ -1,4 +1,3 @@
-const apiKey = 'TU_CLAVE_DE_API';
 function obtenerDatosPokemon(id) {
     const url = `https://pokeapi.co/api/v2/pokemon/${id}/`;
     fetch(url)
@@ -26,12 +25,16 @@ function obtenerDatosPokemon(id) {
 
   const habilidades = document.createElement('p');
   habilidades.textContent = `Habilidades: ${data.abilities.map(ability => ability.ability.name).join(', ')}`;
-
+  
+  const imagen = document.createElement('img');
+  imagen.src = data.sprites.front_default;
   // Agrega más información según tus necesidades, como imagen, estadísticas, etc.
-
+  
+  tarjeta.appendChild(imagen);
   tarjeta.appendChild(nombre);
   tarjeta.appendChild(tipo);
   tarjeta.appendChild(habilidades);
+
 
   // Agrega la tarjeta al contenedor en tu página
   const contenedorPokemon = document.getElementById('pokedex-container');
@@ -39,7 +42,6 @@ function obtenerDatosPokemon(id) {
 }
 
 // Llama a obtenerDatosPokemon para varios Pokémon
-obtenerDatosPokemon(1); // Pikachu
-obtenerDatosPokemon(4); // Charmander
-obtenerDatosPokemon(7); // Squirtle
-// Agrega más Pokémon según sea necesario
+for (let i = 1; i <= 150; i++) {
+  obtenerDatosPokemon(i);
+}
