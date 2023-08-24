@@ -39,17 +39,33 @@ const Pokedex = (function () {
   }
 
   // Método público para dibujar el Pokedex
-  function dibujarPokedex() {
-    // Llama a obtenerDatosPokemon para varios Pokémon
+  function dibujarPokedex(busq) {
+
     for (let i = 1; i <= 150; i++) {
       const url = `https://pokeapi.co/api/v2/pokemon/${i}/`;
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          // Crear un objeto Pokemon con los datos
-          const pokemon = new Pokemon(data);
+
+            //verificar busqueda
+            if(busq===data.name){
+              // Crear un objeto Pokemon con la busqueda de nombre
+              const pokemon = new Pokemon(data);  
+              crearTarjetaPokemon(pokemon);
+            }else if(busq===data.types[0].type.name){
+              // Crear un objeto Pokemon con la busqueda de tipo
+              const pokemon = new Pokemon(data);  
+              crearTarjetaPokemon(pokemon);
+            }else if(busq===""){
+              // Crear un objeto Pokemon 
+              const pokemon = new Pokemon(data);  
+              crearTarjetaPokemon(pokemon);
+            }
+            
+             
+          
           // Llama al método privado para crear la tarjeta HTML
-          crearTarjetaPokemon(pokemon);
+          
         })
         .catch(error => {
           console.error('Error:', error);
@@ -57,11 +73,38 @@ const Pokedex = (function () {
     }
   }
 
+  //limpiar contenedor
+function vaciarContenedor() {
+  contenedorPokemon.innerHTML = ''; // Vacía el contenido del contenedor
+}
+
   // Devuelve solo el método público
   return {
-    dibujarPokedex: dibujarPokedex
+    dibujarPokedex: dibujarPokedex,
+    vaciarContenedor: vaciarContenedor
   };
 })();
 
 // Llama al método público para dibujar el Pokedex
-Pokedex.dibujarPokedex();
+Pokedex.dibujarPokedex("");
+
+{}
+
+//funcion del boton buscar
+document.addEventListener("DOMContentLoaded", function(){
+
+  var boton=document.getElementById("buscar");
+  var inputBusq = document.getElementById("busq");
+
+  boton.addEventListener("click", function(){
+    event.preventDefault();
+
+    var valorBusqueda = inputBusq.value; // Captura el valor ingresado
+
+
+    Pokedex.vaciarContenedor();
+    Pokedex.dibujarPokedex(valorBusqueda);
+    
+  });
+
+})
