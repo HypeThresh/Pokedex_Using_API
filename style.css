@@ -44,3 +44,12 @@
     width: 100%;
   }
 }
+
+.scrollPokemon {
+  width: 100%; /* Ajusta el ancho según tus necesidades */
+  height: 100%;
+  overflow-x: auto; /* Habilita el scroll horizontal */
+  white-space: nowrap; /* Evita que los contenidos se envuelvan en múltiples líneas */
+  display: flex; /* Agrega flex para que las tarjetas se alineen horizontalmente */
+  align-items: center;
+}

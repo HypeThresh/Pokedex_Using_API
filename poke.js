@@ -9,11 +9,26 @@ function Pokemon(data) {
 // Módulo Pokedex
 const Pokedex = (function () {
   // Contenedor donde se mostrarán las tarjetas de Pokémon
-  const contenedorPokemon = document.getElementById('pokedex-container');
+  const contenedorPokemon= document.getElementById('pokedex-container');
+  const tiposPokemon = [
+    "fire", "grass", "normal", "fighting", "flying", "poison",
+    "ground", "rock", "bug", "ghost", "steel", "water",
+    "electric", "psychic", "ice", "dragon", "dark", "fairy"
+  ];
+
+  const contenedoresTipos = {};
+
+  tiposPokemon.forEach(tipo => {
+    contenedoresTipos[tipo] = document.createElement('div');
+  });
+  
 
   // Método privado para crear una tarjeta HTML de Pokémon
   function crearTarjetaPokemon(pokemon) {
-    const tarjeta = document.createElement('div');
+    const tarjeta = document.createElement('div');//tarjetas
+    const contenedorTipo = document.createElement('div');//contenedores de tarjetas ordenados por tipos
+
+    /////////////////////////////////creacion de tarjetas//////////////////////////////////////////////
     tarjeta.classList.add('pokemon-card'); // Agrega una clase CSS para dar estilo a la tarjeta
 
     const nombre = document.createElement('h2');
@@ -27,6 +42,8 @@ const Pokedex = (function () {
 
     const imagen = document.createElement('img');
     imagen.src = pokemon.image;
+
+
     // Agrega más información según tus necesidades, como imagen, estadísticas, etc.
 
     tarjeta.appendChild(imagen);
@@ -34,12 +51,16 @@ const Pokedex = (function () {
     tarjeta.appendChild(tipo);
     tarjeta.appendChild(habilidades);
 
-    // Agrega la tarjeta al contenedor en tu página
-    contenedorPokemon.appendChild(tarjeta);
+    /////////////////////////////////fin creacion de tarjetas//////////////////////////////////////////
+
+    return tarjeta;
   }
 
   // Método público para dibujar el Pokedex
   function dibujarPokedex(busq) {
+    vaciarContenedores()
+    
+    
 
     for (let i = 1; i <= 150; i++) {
       const url = `https://pokeapi.co/api/v2/pokemon/${i}/`;
@@ -51,20 +72,16 @@ const Pokedex = (function () {
             if(busq===data.name){
               // Crear un objeto Pokemon con la busqueda de nombre
               const pokemon = new Pokemon(data);  
-              crearTarjetaPokemon(pokemon);
+              categorizarTarjetas(pokemon); 
             }else if(busq===data.types[0].type.name){
               // Crear un objeto Pokemon con la busqueda de tipo
               const pokemon = new Pokemon(data);  
-              crearTarjetaPokemon(pokemon);
+              categorizarTarjetas(pokemon);
             }else if(busq===""){
               // Crear un objeto Pokemon 
-              const pokemon = new Pokemon(data);  
-              crearTarjetaPokemon(pokemon);
+              const pokemon = new Pokemon(data); 
+              categorizarTarjetas(pokemon);
             }
-            
-             
-          
-          // Llama al método privado para crear la tarjeta HTML
           
         })
         .catch(error => {
@@ -77,6 +94,39 @@ const Pokedex = (function () {
 function vaciarContenedor() {
   contenedorPokemon.innerHTML = ''; // Vacía el contenido del contenedor
 }
+  //limpiar contenedores de cada tipo
+function vaciarContenedores(){
+  for (const tipo in contenedoresTipos) {
+    contenedoresTipos[tipo].innerHTML = '';
+  }
+}
+
+//categorizar las tarjetas por tipos y mostrarlas
+function categorizarTarjetas(pokemon){
+
+    //agrega un scroll
+    for (const tipo in contenedoresTipos) {
+      contenedoresTipos[tipo].classList.add('scrollPokemon');
+    }
+
+    //filtrando y agregando por tipo
+    for (const tipo in contenedoresTipos) {
+      if (pokemon.type === tipo) {
+        const tarjeta = crearTarjetaPokemon(pokemon);
+        contenedoresTipos[tipo].appendChild(tarjeta);
+      }
+    }
+
+    //agregando al contenedor principal
+
+    for (const tipo in contenedoresTipos) {
+        contenedorPokemon.appendChild(contenedoresTipos[tipo]);
+    }
+            
+
+}
+
+
 
   // Devuelve solo el método público
   return {
