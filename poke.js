@@ -32,7 +32,7 @@ async function obtenerHabilidad(url) {
 // Módulo Pokedex
 const Pokedex = (function () {
   // Contenedor donde se mostrarán las tarjetas de Pokémon
-  const contenedorPokemon = document.getElementById('pokedex-container');
+const contenedorPokemon = document.getElementById('pokedex-container');
 // Método privado para crear una tarjeta HTML de Pokémon
 async function crearTarjetaPokemon(pokemon) {
   const tarjeta = document.createElement('div');
@@ -43,7 +43,27 @@ async function crearTarjetaPokemon(pokemon) {
 
   const tipo = document.createElement('p');
   tipo.textContent = `Tipo: ${pokemon.type}`;
+  const contenedorPokemon= document.getElementById('pokedex-container');
+  const tiposPokemon = [
+    "fire", "grass", "normal", "fighting", "flying", "poison",
+    "ground", "rock", "bug", "ghost", "steel", "water",
+    "electric", "psychic", "ice", "dragon", "dark", "fairy"
+  ];
 
+  const contenedoresTipos = {};
+
+  tiposPokemon.forEach(tipo => {
+    contenedoresTipos[tipo] = document.createElement('div');
+  });
+  
+
+  // Método privado para crear una tarjeta HTML de Pokémon
+  function crearTarjetaPokemon(pokemon) {
+    const tarjeta = document.createElement('div');//tarjetas
+    const contenedorTipo = document.createElement('div');//contenedores de tarjetas ordenados por tipos
+
+    /////////////////////////////////creacion de tarjetas//////////////////////////////////////////////
+    tarjeta.classList.add('pokemon-card'); // Agrega una clase CSS para dar estilo a la tarjeta
   const habilidades = document.createElement('p');
   habilidades.textContent = `Habilidades:`;
 
@@ -62,6 +82,10 @@ async function crearTarjetaPokemon(pokemon) {
   tarjeta.appendChild(tipo);
   tarjeta.appendChild(habilidades);
 
+    const imagen = document.createElement('img');
+    imagen.src = pokemon.image;
+    // Agrega más información según tus necesidades, como imagen, estadísticas, etc.
+
   // Agrega la tarjeta al contenedor en tu página
   contenedorPokemon.appendChild(tarjeta);
 
@@ -78,6 +102,9 @@ async function obtenerInfoAdicional(pokemon) {
 
   if (!response.ok) {
     throw new Error(`No se pudo obtener información adicional para ${pokemon.name}`);
+    /////////////////////////////////fin creacion de tarjetas//////////////////////////////////////////
+
+    return tarjeta;
   }
 
   const data = await response.json();
@@ -124,15 +151,78 @@ async function obtenerInfoAdicional(pokemon) {
       }
     } catch (error) {
       console.error("Error al obtener Pokémon:", error);
+  function dibujarPokedex(busq) {
+    vaciarContenedores()
+    
+    
+
+    for (let i = 1; i <= 150; i++) {
+      const url = `https://pokeapi.co/api/v2/pokemon/${i}/`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+
+            //verificar busqueda
+            if(busq===data.name){
+              // Crear un objeto Pokemon con la busqueda de nombre
+              const pokemon = new Pokemon(data);  
+              categorizarTarjetas(pokemon); 
+            }else if(busq===data.types[0].type.name){
+              // Crear un objeto Pokemon con la busqueda de tipo
+              const pokemon = new Pokemon(data);  
+              categorizarTarjetas(pokemon);
+            }else if(busq===""){
+              // Crear un objeto Pokemon 
+              const pokemon = new Pokemon(data); 
+              categorizarTarjetas(pokemon);
+            }
+          
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     }
   }
-  
-  
-
   // Limpiar contenedor
   function vaciarContenedor() {
     contenedorPokemon.innerHTML = ''; // Vacía el contenido del contenedor
   }
+=======
+  //limpiar contenedor
+function vaciarContenedor() {
+  contenedorPokemon.innerHTML = ''; // Vacía el contenido del contenedor
+}
+  //limpiar contenedores de cada tipo
+function vaciarContenedores(){
+  for (const tipo in contenedoresTipos) {
+    contenedoresTipos[tipo].innerHTML = '';
+  }
+}
+
+//categorizar las tarjetas por tipos y mostrarlas
+function categorizarTarjetas(pokemon){
+
+    //agrega un scroll
+    for (const tipo in contenedoresTipos) {
+      contenedoresTipos[tipo].classList.add('scrollPokemon');
+    }
+
+    //filtrando y agregando por tipo
+    for (const tipo in contenedoresTipos) {
+      if (pokemon.type === tipo) {
+        const tarjeta = crearTarjetaPokemon(pokemon);
+        contenedoresTipos[tipo].appendChild(tarjeta);
+      }
+    }
+
+    //agregando al contenedor principal
+
+    for (const tipo in contenedoresTipos) {
+        contenedorPokemon.appendChild(contenedoresTipos[tipo]);
+    }
+            
+
+}
 
   // Devuelve solo el método público
   return {
